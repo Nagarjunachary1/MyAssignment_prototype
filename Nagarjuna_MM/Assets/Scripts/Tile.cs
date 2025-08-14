@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,13 @@ public class Tile : MonoBehaviour
 {
     public GameObject hide_obj;
     public Image main_obj;
+
+    [SerializeField]
+    private Button this_btn;
+    public event Action<Tile> OnCardFlipped;
+
+    public static bool canClick=true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,14 +33,17 @@ public class Tile : MonoBehaviour
     public void ButtonClick()
     {
 
+        canClick = false;
         iTween.ScaleFrom(this.gameObject,
             iTween.Hash("x",0.8f,"y",0.5f)) ;
 
 
         iTween.RotateFrom(this.gameObject,
             iTween.Hash("y",180,"time",0.5f,
-            "oncomplete", "CompleteFun",
+            "oncomplete", nameof(CompleteFun),
             "oncompletetarget", gameObject));
+
+         
 
     }
 
@@ -42,19 +53,41 @@ public class Tile : MonoBehaviour
 
         main_obj.gameObject.SetActive(true);
 
-     //  Invoke("Mdelay",1);
+        OnCardFlipped(this);
+
+        canClick = true;
+        //  Invoke("Mdelay",1);
+
     }
 
-    void Mdelay()
+
+
+    void CompleteFunRevert()
     {
         hide_obj.SetActive(true);
         main_obj.gameObject.SetActive(false);
 
 
     }
-    // Update is called once per frame
-    void Update()
+
+
+
+    public void MatchFun()
     {
-        
+        this_btn.interactable = false;
+    }
+
+    public void Revertback()
+    {
+
+        hide_obj.SetActive(true);
+        main_obj.gameObject.SetActive(false);
+
+        iTween.RotateFrom(this.gameObject,
+            iTween.Hash("y", 180, "time", 0.5f,
+            "oncomplete", nameof(CompleteFunRevert),
+            "oncompletetarget", gameObject));
+
+       
     }
 }

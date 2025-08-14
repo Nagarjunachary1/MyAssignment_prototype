@@ -18,6 +18,17 @@ public static class Utility
         }
     }
 
+
+    public static int levelNumber = 1;
+
+    public static Vector2[] levelGrids = new Vector2[]{
+       new Vector2(2, 2),
+       new Vector2(2, 3),
+       new Vector2(4, 5),
+       new Vector2(5, 6),
+       new Vector2(6, 6)
+    };
+
  
 }
 
