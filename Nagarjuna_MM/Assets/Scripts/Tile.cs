@@ -15,6 +15,8 @@ public class Tile : MonoBehaviour
 
     public static bool canClick=true;
 
+    [SerializeField]
+    private bool isFlipped = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,8 +34,14 @@ public class Tile : MonoBehaviour
 
     public void ButtonClick()
     {
+
+        if (isFlipped)
+            return;
+
+        isFlipped = true;
         AudioEvents.CardFlipSound();
 
+        
         canClick = false;
         iTween.ScaleFrom(this.gameObject,
             iTween.Hash("x",0.8f,"y",0.5f)) ;
@@ -67,7 +75,7 @@ public class Tile : MonoBehaviour
     {
         hide_obj.SetActive(true);
         main_obj.gameObject.SetActive(false);
-
+        isFlipped = false;
 
     }
 

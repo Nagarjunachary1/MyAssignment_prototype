@@ -32,3 +32,10 @@ public static class Utility
  
 }
 
+
+public static class ScoreEvents
+{
+    public static Action<int> OnScoreUpdated;
+    public static Action<int> OnMovesUpdated;
+}
+

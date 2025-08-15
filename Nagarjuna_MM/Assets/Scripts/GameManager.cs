@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public Sprite[] cardImages;
     public List<Tile> allCardsList;
 
-
+    public GameObject winParticleObj;
 
 
     private float totalPairs;
@@ -23,6 +23,14 @@ public class GameManager : MonoBehaviour
 
     private int currentLevel = 1;
     private int score;
+    private int movesCount = 0;
+
+    //Best Score and Moves
+    string scoreKey ;
+    string movesKey ;
+
+    int bestScore =0;
+    int bestMoves =1000;
 
 
     private void OnDisable()
@@ -42,6 +50,11 @@ public class GameManager : MonoBehaviour
         GenerateTiles();
 
         CardTilesHandler();
+
+
+        GetBestScoreData();
+
+
     }
 
 
@@ -128,6 +141,7 @@ public class GameManager : MonoBehaviour
 
             firstCard = flipCardsQueue.Dequeue();
             secondCard = flipCardsQueue.Dequeue();
+            movesCount++;
 
             if (firstCard.name == secondCard.name)
             {
@@ -138,6 +152,7 @@ public class GameManager : MonoBehaviour
 
                 totalPairs--;
 
+               
 
                 StartCoroutine(DelayComplete());
                
@@ -149,6 +164,10 @@ public class GameManager : MonoBehaviour
                 Invoke(nameof(RevertCards), 1);
               
             }
+
+
+            ScoreEvents.OnScoreUpdated(score);
+            ScoreEvents.OnMovesUpdated(movesCount);
         }
 
     }
@@ -169,15 +188,56 @@ public class GameManager : MonoBehaviour
         AudioEvents.CorrectMatchSound();
 
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
 
 
         if (totalPairs <= 0)
         {
-            UiManager.instance.LevelComplete();
             AudioEvents.WinSound();
+            winParticleObj.SetActive(true);
+
         }
 
+            yield return new WaitForSeconds(0.5f);
+
+
+        if (totalPairs <= 0)
+        {
+           
+            if (score > bestScore)
+            {
+                PlayerPrefs.SetInt(scoreKey, score);
+                PlayerPrefs.Save();
+                UiManager.instance.LevelComplete(true); // on complete passing best_score bool to set badge active
+
+
+            }
+            else
+            {
+                UiManager.instance.LevelComplete(false);
+            }
+
+
+
+            if (movesCount < bestMoves)
+                PlayerPrefs.SetInt(movesKey, movesCount); PlayerPrefs.Save();
+
+
+        }
+
+    }
+
+    ////
+    ///
+
+    void GetBestScoreData()
+    {
+        scoreKey = $"level{currentLevel}_PrefScore";
+        movesKey = $"level{currentLevel}_PrefMoves";
+
+
+        bestScore = PlayerPrefs.GetInt(scoreKey, 0);
+        bestMoves = PlayerPrefs.GetInt(movesKey, 1000);
     }
 
 
