@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,9 +26,14 @@ public class MenuUi : MonoBehaviour
         }
     }
 
-    public void LoadGame(int _lvlNum)
+    public async void LoadGame(int _lvlNum)
     {
+        AudioEvents.ButtonClickSound();
+
         Utility.levelNumber = _lvlNum;
-        SceneManager.LoadScene("Game");
+
+        await Task.Delay(400);
+
+        SceneManager.LoadSceneAsync("Game");
     }
 }

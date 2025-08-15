@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class UiManager : MonoBehaviour
 {
@@ -19,9 +20,12 @@ public class UiManager : MonoBehaviour
     }
 
 
-    public void LoadNewScene(string _sceneName)
+    public async void LoadNewScene(string _sceneName)
     {
-        SceneManager.LoadScene(_sceneName);
+        AudioEvents.ButtonClickSound();
+
+        await Task.Delay(400);
+        SceneManager.LoadSceneAsync(_sceneName);
     }
 
 

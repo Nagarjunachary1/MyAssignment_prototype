@@ -139,11 +139,8 @@ public class GameManager : MonoBehaviour
                 totalPairs--;
 
 
-                if (totalPairs<=0)
-                {
-                    Invoke(nameof(DelayComplete),1);
-
-                }
+                StartCoroutine(DelayComplete());
+               
             }
             else
             {
@@ -161,15 +158,29 @@ public class GameManager : MonoBehaviour
     {
          firstCard.Revertback();
          secondCard.Revertback();
+        AudioEvents.InCorrectmatchSound();
+
     }
 
 
-    void DelayComplete()
+    IEnumerator DelayComplete()
     {
-        UiManager.instance.LevelComplete();
+        yield return new WaitForSeconds(0.3f);
+        AudioEvents.CorrectMatchSound();
+
+
+        yield return new WaitForSeconds(1);
+
+
+        if (totalPairs <= 0)
+        {
+            UiManager.instance.LevelComplete();
+            AudioEvents.WinSound();
+        }
+
     }
 
-   
+
 
 
 }

@@ -32,6 +32,7 @@ public class Tile : MonoBehaviour
 
     public void ButtonClick()
     {
+        AudioEvents.CardFlipSound();
 
         canClick = false;
         iTween.ScaleFrom(this.gameObject,
